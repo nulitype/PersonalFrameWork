@@ -14,8 +14,8 @@ class LoopManager {
 
     /** 依赖框架的帧循环 */
     public static loop() {
-        this.frameLoop();
-        this.intervalLoop();
+        LoopManager.frameLoop();
+        LoopManager.intervalLoop();
     }
 
     /** 调用frame里的方法 */
@@ -89,13 +89,16 @@ class LoopManager {
             }
         }
     }
+}
 
-    public static callLaterSec(sec: number = 3000) {
-        return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-            LoopManager.setInterval(propertyKey, descriptor.value, null, sec);
+
+function callLaterSec(sec: number = 3000) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let method = descriptor.value;
+        descriptor.value = function() {
+            LoopManager.setInterval(propertyKey, method, null, sec);
         }
     }
-
 }
 
 
